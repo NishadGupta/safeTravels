@@ -41,9 +41,17 @@ function addToFavouriteRestaurants(city,restaurantName,image_url,ratings,display
     },
     body: JSON.stringify({ "city":city,"restaurantName": restaurantName, "image":image_url,"ratings":ratings,"display_phone":display_phone,"user":user})
 })
-        .then(response=>{console.log("success")})
-        .then(data=>{
-            document.getElementById('myDialog').show()
+       .then(response=>response.json())
+         .then(data=>{
+             let result=data['data']
+             if(result=="success"){
+                document.getElementById('status').innerHTML="Saved Successfully!!!"
+             }
+             else{
+                    document.getElementById('status').innerHTML="Restaurant is already saved!!!"
+             }
+             document.getElementById('myDialog').show()
+
         })
 
     // window.location.href = 'http://127.0.0.1:5000/saveRestaurant';
@@ -365,7 +373,7 @@ function validateAndStoreHotelInfo(){
     let toDate=document.getElementById('toDate').value
     let fromDate=document.getElementById('fromDate').value
     let guests=document.getElementById('guests').value
-    let restaurant=document.getElementById('restaurant').value
+    let hotel=document.getElementById('hotel').value
     console.log(guests)
      if(guests=="" || rooms=="" || city=="" || toDate=="" || fromDate==""){
          alert('Please enter all the fields')
@@ -378,7 +386,7 @@ function validateAndStoreHotelInfo(){
          url.searchParams.set('myCity',city);
          url.searchParams.set('toDate',toDate);
          url.searchParams.set('fromDate',fromDate);
-         url.searchParams.set('restaurant',restaurant);
+         url.searchParams.set('hotel',hotel);
          url.searchParams.set('state',state);
 
          var price_list = ['0-250', '250-500', '500-750', '750-1000'];
@@ -478,6 +486,46 @@ function validateAndStoreFlightInfo(){
 function fetchAttractions(){
 
          const url = new URL("http://127.0.0.1:5000/showAttractions");
+
+
+         var price_list = ['0-250', '250-500', '500-750', '750-1000'];
+         var ratings_list=[0,1,2,3,4,5];
+         var prices={}
+         var ratings={}
+         for (var j = 0; j < price_list.length; j++) {
+            if(document.getElementById(price_list[j]).checked){
+            prices[price_list[j]]=true
+            }
+            else{
+                prices[price_list[j]]=false
+            }
+        }
+
+        for (var j = 0; j < ratings_list.length; j++) {
+            if(document.getElementById(ratings_list[j]).checked){
+            ratings[j]=true
+            }
+            else{
+                 ratings[j]=false
+            }
+        }
+        console.log(JSON.stringify(prices))
+
+        url.searchParams.set('myCity',document.getElementById('myCity').value)
+        url.searchParams.set('user',sessionStorage.getItem('user'))
+        url.searchParams.set('priceFilters',JSON.stringify(prices));
+        url.searchParams.set('ratingFilters',JSON.stringify(ratings));
+
+
+         const updatedUrl = url.toString();
+         console.log(updatedUrl)
+         window.location.href=updatedUrl
+
+}
+
+function fetchRestaurants(){
+
+         const url = new URL("http://127.0.0.1:5000/showRestaurants");
 
 
          var price_list = ['0-250', '250-500', '500-750', '750-1000'];
@@ -650,18 +698,18 @@ function proceedhotelpayment(){
     let guestEmailAddress = document.getElementById('email').value
     let rooms = data['rooms']
     let guests =data['guests']
-    if(validatePhone() && validateEmail() && validatePhone() && validateCardNumber() && validateExpiry() && validateCVV() && firstname!="" && lastname!=""){
+    if(firstname!="" && lastname!="" && validatePhone() && validateEmail() && validateCardNumber() && validateExpiry() && validateCVV()){
 
          fetch('http://127.0.0.1:5000/hotelPayment', {
-    method: 'POST',
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ "hotelName":hotelName, "city":city, "ratings":ratings, "image":image,"phone":phone,"basePrice":basePrice,"taxes":taxes
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "hotelName":hotelName, "city":city, "ratings":ratings, "image":image,"phone":phone,"basePrice":basePrice,"taxes":taxes
                                 ,"totalAmount":totalAmount,"guestFirstName":firstname,"guestLastName":lastname,"guestContactNumber":guestContactNumber,"guestEmailAddress":guestEmailAddress
                                 ,"rooms":rooms,"guests":guests,"fromDate":fromDate,"toDate":toDate,"user":user})
-    })
+            })
         .then(response=>{
             if(response.status==200){
                 window.location.href="http://127.0.0.1:5000/success"
@@ -684,6 +732,7 @@ function proceedFlightpayment(){
 
     let user=sessionStorage.getItem('user')
     let fullName=document.getElementById('nameoncard').value
+    let contactNumber=document.getElementById('phone').value
     var inputsContainer = document.getElementById("passengerslist");
     var names = inputsContainer.getElementsByClassName("passengersnames");
     var ages = inputsContainer.getElementsByClassName("passengersages");
@@ -728,7 +777,7 @@ function proceedFlightpayment(){
 
         flight_data={ "flightName":flightName, "fromCity":fromCity,"toCity":toCity, "ratings":ratings, "image":image,"phone":phone,"basePrice":basePrice,"taxes":taxes
                                 ,"totalAmount":totalAmount,"passengers":passengers,"passengers_list":passengers_list,
-                                "departTime":departTime,"journeyTime":journeyTime,"fullName":fullName,"level":level,"journeyType":journeyType,"user":user}
+                                "departTime":departTime,"journeyTime":journeyTime,"fullName":fullName,"level":level,"journeyType":journeyType,"user":user,"contactNumber":contactNumber}
 
 
     }
@@ -765,7 +814,7 @@ function proceedFlightpayment(){
                                 ,"totalAmount":totalAmount,"passengers":passengers,"passengers_list":passengers_list,
                                 "departTime":departTime,"fullName":fullName,"level":level,"flightName1":flightName1,
                                 "fromCity1":fromCity1,"toCity1":toCity1, "ratings1":ratings1, "image1":image1,"phone1":phone1,
-                                 "departTime1":departTime1,"journeyType":journeyType,"journeyTime1":journeyTime1,"user":user}
+                                 "departTime1":departTime1,"journeyType":journeyType,"journeyTime1":journeyTime1,"user":user,"contactNumber":contactNumber}
 
     }
 
@@ -919,9 +968,9 @@ function getCities(my_data){
 
 }
 
-function setRestaurant(){
-    let restaurant=document.getElementById('restaurant')
-    sessionStorage.setItem('restaurant',restaurant)
+function setHotel(){
+    let restaurant=document.getElementById('hotel')
+    sessionStorage.setItem('hotel',hotel)
 }
 function setUser(){
 
@@ -957,11 +1006,11 @@ function loggingUser(){
 function setChecked(starNumber){
     for(var i=1;i<=starNumber;i++){
         let idValue='star'+i
-        document.getElementById(idValue).className='fa fa-star inline checked'
+        document.getElementById(idValue).className='fa fa-star fa-1x inline checked'
     }
      for(var i=starNumber+1;i<=5;i++){
         let idValue='star'+i
-        document.getElementById(idValue).className='fa fa-star inline'
+        document.getElementById(idValue).className='fa fa-star fa-1x inline'
     }
 
 }

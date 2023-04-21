@@ -55,17 +55,18 @@
                 <div class="card rest rest-page" style="margin-left:90px">
                 <h2>{{ restaurant.restaurantName }}</h2>
                 <img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }}" style="height:50%;width:70%">
-                <div style="padding-top: 25px">
-
-                 <div>
+                <div>
+                 <div style="margin-top:20px">
                     <span class="inline">Ratings:</span>
                     {% for i in range(1,restaurant.ratings | int + 1) %}
                         <span class="fa fa-star checked inline"></span>
                     {% endfor %}
 
-                    </div>
-                    <p>Contact Number: {{ restaurant.phone }}</p>
-                    <div>
+                 </div>
+                  <div style="margin-top:20px">City: {{ restaurant.city }}</div>
+                  <div style="margin-top:20px">Contact Number: {{ restaurant.phone }}</div>
+
+                 <div>
                   <button class="material-icons" title="Delete" style="float:right;margin-top:20px;border:none;background:none" onclick="removeFromFavouriteRestaurants('{{ restaurant.restaurantName}}','{{ restaurant.city}}')" >&#xe872;</button>
                     </div>
                 </div>
@@ -92,15 +93,17 @@
                 <div class="card rest rest-page" style="margin-left:90px">
                 <h2>{{ attraction.attractionName }}</h2>
                 <img src="{{ attraction.image_url }}" alt="{{ attraction.attractionName }}" style="height:50%;width:70%">
-                <div style="padding-top: 25px">
-                 <div>
+                <div>
+                 <div style="margin-top:20px">
                     <span class="inline">Ratings:</span>
                     {% for i in range(1,attraction.ratings | int + 1) %}
                         <span class="fa fa-star checked inline"></span>
                     {% endfor %}
 
-                    </div>
-                    <p>Contact Number: {{ attraction.phone }}</p>
+                 </div>
+                  <div style="margin-top:20px">City: {{ attraction.city }}</div>
+                  <div style="margin-top:20px">Contact Number: {{ attraction.phone }}</div>
+
                  <div>
                          <button class="material-icons" title="Delete" style="float:right;margin-top:20px;border:none;background:none"  onclick="removeFromFavouriteAttractions('{{ attraction.attractionName}}','{{ attraction.city}}')" value="Unfavourite">&#xe872;</button>
                     </div>
@@ -125,15 +128,19 @@
                     {% for i in range(1,hotel.ratings | int + 1) %}
                         <span class="fa fa-star checked inline"></span>
                     {% endfor %}</sup>
+                    <span style="float:right;font-size:20px;padding-right:20px">Booking ID: {{hotel.id}} </span>
                     </h2>
+
                 <div style="width: 50%;float: left;">
                     <img src="{{ hotel.image }}" alt="{{ hotel.hotelName }}" style="width:60%;height: 150px">
+
                 </div>
                 <div style="margin-left: 60%;float: bottom">
-                     <h4>Booking ID: {{hotel.id}} </h4>
                      <h4>Guest Name: {{ hotel.guestFirstName }} {{hotel.guestLastName}}</h4>
                      <h4>Number of rooms: {{ hotel.rooms }}</h4>
-                     <h4>From <strong>{{ hotel.fromDate }}</strong>   to   <strong>{{hotel.toDate}}</strong> </h4>
+                     <h4>Check-in : <strong>{{ hotel.fromDate }}</strong>  12:00 PM  </h4>
+                      <h4>Check-out : <strong>{{ hotel.toDate }}</strong>  11:00 AM  </h4>
+                     <h4>City: {{ hotel.city }}</h4>
                      <h4>Total Payment: {{ hotel.totalAmount }}</h4>
                  <div><button style="background-color:#3B666B;color: black;width: 200px;height:30px;border-radius: 4px"  onclick="deleteHotelBooking('{{ hotel.id}}')" value="Cancel Booking">Cancel Booking</button></div>
                 </div>
@@ -182,7 +189,7 @@
                      <h4>Number of passengers: {{ flight.passengers }}</h4>
 
                      <h4>Departure Time: <strong>{{ flight.departTime }}</strong>   </h4>
-                     <h4>Total Payment: ${{ flight.totalAmount }}</h4>
+                     <h4>Total Payment: {{ flight.totalAmount }}</h4>
                  <div><button style="background-color:#3B666B;color: black;width: 200px;height:30px;border-radius: 4px"  onclick="deleteHotelBooking('{{ flight.id}}')" value="Cancel Booking">Cancel Booking</button></div>
                 </div>
 

@@ -1,5 +1,5 @@
 import flask
-from flask import Blueprint, session
+from flask import Blueprint, session, Flask
 from flask import jsonify
 from flask import render_template, request
 import requests
@@ -15,8 +15,24 @@ from safeTravelsBackEnd.models.dbModels import wishlistRestaurants, hotelBooking
 from safeTravelsBackEnd.models.dbModels import wishlistHotels
 import math
 
+from flask_mail import Mail, Message
+from twilio.rest import Client
+
 paths = Blueprint("Paths", __name__)
 
+account_sid = 'AC0333b6029f104625a54bae7c3164f521'
+auth_token = '884e676aedc7a0cbea25d24827da47ba'
+client = Client(account_sid, auth_token)
+@paths.route('/send_sms')
+def send_sms():
+
+    message = client.messages.create(
+        to='+14258664226',  # replace with the phone number you want to send the message to
+        from_='+18775895208',  # replace with your Twilio phone number
+        body='Hello from Flask!'  # replace with the message body
+    )
+
+    return 'SMS sent'
 
 @paths.route("/")
 def basePage():
@@ -167,13 +183,28 @@ headers = {
 def resturantsHome():
 
      # return render_template('signUp/searchRestaurants.html')
-     return render_template('signUp/searchRestaurants.php',city="")
+     return render_template('signUp/searchRestaurants.php',city="",data={})
 @paths.route('/showRestaurants', methods=['POST','GET'])
 def search():
+
     user=request.args.get('user')
     if user==None or user=="":
         return render_template('signUp/loginCustomer.html')
     city = request.args.get('myCity')
+
+    price_list_mapping = {'0-250': 'one', '250-500': 'two', '500-750': 'three', '750-1000': 'four'}
+    prices = json.loads(request.args.get('priceFilters'))
+    new_prices = {}
+    for key in price_list_mapping.keys():
+        new_prices[price_list_mapping[key]] = prices[key]
+
+    ratings = json.loads(request.args.get('ratingFilters'))
+
+    my_data = {}
+    my_data['myCity'] = city
+    my_data['priceFilters'] = new_prices
+    my_data['ratingFilters'] = ratings
+
     # if request.method == 'GET':
     #     city = 'NYC' 
         
@@ -220,9 +251,16 @@ def search():
 
         # print the list of restaurants
         print(restaurants[0])
-        # for r in restaurants:
-        #     print(r['name'], r['location']['address1'])
-        return render_template('signUp/searchRestaurants.php',restaurants=restaurants[:50],city=city)
+
+
+        for i in range(len(restaurants)):
+            restaurants[i]['price']=random.randint(250,600)
+
+
+        final_restaurants=filter_list(restaurants, prices, ratings)
+        print(final_restaurants[:10])
+
+        return render_template('signUp/searchRestaurants.php',restaurants=final_restaurants[:50],city=city,data=my_data)
         # return render_template('signUp/searchRestaurants.html', restaurants=restaurants[:50])
 @paths.route('/saveRestaurant', methods=['POST','GET'])
 def saveRestaurant():
@@ -238,7 +276,8 @@ def saveRestaurant():
         results = wishlistRestaurants.query.filter_by(restaurantName=restaurantName,city=city,userId=user).all()
         print(results)
         if len(results):
-            wishlistRestaurants.query.filter_by(restaurantName=restaurantName, city=city,userId=user).update({"restaurantName": restaurantName, "city": city, "ratings": ratings, "image": image, "phone": phone})
+            # wishlistRestaurants.query.filter_by(restaurantName=restaurantName, city=city,userId=user).update({"restaurantName": restaurantName, "city": city, "ratings": ratings, "image": image, "phone": phone})
+            return {"data": "already exists"}
         else:
             my_data = wishlistRestaurants(restaurantName=restaurantName,city=city, ratings=ratings,image=image,phone=phone,userId=user)
             safeTravelsdb.session.add(my_data)
@@ -246,7 +285,7 @@ def saveRestaurant():
         safeTravelsdb.session.commit()
         session.clear()
     # return render_template('signUp/success.html')
-    return "success"
+    return {"data":"success"}
 
 @paths.route('/saveAttraction', methods=['POST','GET'])
 def saveAttraction():
@@ -353,7 +392,7 @@ def searchHotel():
         return render_template('signUp/loginCustomer.html')
     city = request.args.get('myCity')
     state=request.args.get('state')
-    restaurant = request.args.get('restaurant')
+    hotel = request.args.get('hotel')
     fromDate=request.args.get('fromDate')
     toDate=request.args.get('toDate')
     rooms = request.args.get('rooms')
@@ -365,7 +404,7 @@ def searchHotel():
         new_prices[price_list_mapping[key]]=prices[key]
     print(new_prices)
     ratings = json.loads(request.args.get('ratingFilters'))
-    my_data={'city':city,'fromDate':fromDate,'toDate':toDate,'rooms':rooms,'guests':guests,'priceFilters':new_prices,'ratingFilters':ratings,'state':state,'restaurant':restaurant}
+    my_data={'city':city,'fromDate':fromDate,'toDate':toDate,'rooms':rooms,'guests':guests,'priceFilters':new_prices,'ratingFilters':ratings,'state':state,'hotel':hotel}
     # if request.method == 'GET':
     #     city = 'NYC' 
         
@@ -468,14 +507,14 @@ def searchHotel():
         else:
             final_hotels=hotels
 
-        print(restaurant)
-        if restaurant!="":
+        print(hotel)
+        if hotel!="":
             temp_hotels=final_hotels
             final_hotels=[]
-            for hotel in temp_hotels:
+            for temp_hotel in temp_hotels:
                 print(hotel)
-                if restaurant[:3] in hotel['name']:
-                    final_hotels.append(hotel)
+                if hotel[:3] in temp_hotel['name']:
+                    final_hotels.append(temp_hotel)
 
         url = 'https://countriesnow.space/api/v0.1/countries/states'
         data1 = {
@@ -578,7 +617,7 @@ def searchAttractions():
             attractions[i]['price']=random.randint(250,600)
 
 
-        final_attractions=filter_flights(attractions, prices, ratings)
+        final_attractions=filter_list(attractions, prices, ratings)
         print(final_attractions[:10])
 
         return render_template('signUp/searchAttractions.php', attractions=final_attractions[:50],data=my_data)
@@ -688,7 +727,7 @@ def showFlights():
                     random.randint(0, 60)).zfill(2)
                 return_flights[i]['journey_time'] = str(random.randint(1, 7))
 
-            final_return_flights = filter_flights(return_flights, prices, ratings)
+            final_return_flights = filter_list(return_flights, prices, ratings)
 
 
         for i in range(len(flights)):
@@ -703,7 +742,7 @@ def showFlights():
                     random.randint(0, 60)).zfill(2)
             flights[i]['journey_time'] = str(random.randint(1, 7))
 
-        final_flights=filter_flights(flights,prices,ratings)
+        final_flights=filter_list(flights,prices,ratings)
 
 
         if my_data['journeyType'] == "return":
@@ -723,7 +762,7 @@ def showFlights():
 
         return render_template('signUp/searchFlights.php', flights=result_flights,data=my_data)
 
-def filter_flights(temp_flights,prices,ratings):
+def filter_list(temp_list,prices,ratings):
 
     print(prices)
     print(ratings)
@@ -743,12 +782,12 @@ def filter_flights(temp_flights,prices,ratings):
             ratings_filter = True
     print(ratings_filter,price_filter)
     if ratings_filter and price_filter:
-        for i in range(len(temp_flights)):
+        for i in range(len(temp_list)):
             for j in range(len(price_list)):
                 if prices[price_list[j]] == True:
                     value = price_list[j].split('-')
-                    if temp_flights[i]['price'] >= int(value[0]) and temp_flights[i]['price'] <= int(value[1]):
-                        final_flights1.append(temp_flights[i])
+                    if temp_list[i]['price'] >= int(value[0]) and temp_list[i]['price'] <= int(value[1]):
+                        final_flights1.append(temp_list[i])
                         break
 
         # print(final_hotels1)
@@ -761,24 +800,24 @@ def filter_flights(temp_flights,prices,ratings):
                         break
     elif ratings_filter:
 
-        for i in range(len(temp_flights)):
+        for i in range(len(temp_list)):
             for j in range(len(ratings_list)):
                 if ratings[ratings_list[j]] == True:
                     value = ratings_list[j]
-                    if math.floor(temp_flights[i]['rating']) == int(value):
-                        final_flights.append(temp_flights[i])
+                    if math.floor(temp_list[i]['rating']) == int(value):
+                        final_flights.append(temp_list[i])
                         break
     elif price_filter:
-        for i in range(len(temp_flights)):
+        for i in range(len(temp_list)):
             for j in range(len(price_list)):
                 if prices[price_list[j]] == True:
                     value = price_list[j].split('-')
                     # print(temp_flights[i])
-                    if temp_flights[i]['price'] >= int(value[0]) and temp_flights[i]['price'] <= int(value[1]):
-                        final_flights.append(temp_flights[i])
+                    if temp_list[i]['price'] >= int(value[0]) and temp_list[i]['price'] <= int(value[1]):
+                        final_flights.append(temp_list[i])
                         break
     else:
-        final_flights = temp_flights
+        final_flights = temp_list
     return final_flights
 
 @paths.route('/bookHotel', methods=['POST','GET'])
@@ -824,6 +863,17 @@ def hotelPayment():
                                 ,rooms=rooms,guests=guests,fromDate=fromDate,toDate=toDate,userId=user)
         safeTravelsdb.session.add(my_data)
         safeTravelsdb.session.commit()
+
+        sms_content = "\nHi "+str(guestFirstName)+" "+str(guestLastName)+"\nHere are your hotel booking confirmation details.\nBooking ID:"+str(my_data.id)+"\nHotel Name:"+str(hotelName)+"\nCheck-in:"+str(fromDate)+" 12:00 PM\nNumber of rooms:"+str(rooms)+"\n-From SafeTravels"
+
+
+        message = client.messages.create(
+            to='+1'+guestContactNumber,  # replace with the phone number you want to send the message to
+            from_='+18775895208',  # replace with your Twilio phone number
+            body=sms_content  # replace with the message body
+        )
+
+
         return render_template('signUp/success.html',data=data)
     return "success"
 
@@ -857,6 +907,8 @@ def flightPayment():
         passengers = data['passengers']
         passengers_list = str(data['passengers_list'])
 
+        contactNumber=data['contactNumber']
+
         if data['journeyType']=='one-way':
 
             my_data = flightBookings(flightName=flightName, fromCity=fromCity, toCity=toCity, ratings=ratings, image=image,phone=phone,fullName=fullName,basePrice=basePrice,taxes=taxes
@@ -864,6 +916,21 @@ def flightPayment():
                                 ,passengers_list=passengers_list,departTime=departTime,level=level,userId=user)
             safeTravelsdb.session.add(my_data)
             safeTravelsdb.session.commit()
+
+            sms_content = ""+"\nHi " + str(
+                user) + "\nHere are your flight booking confirmation details.\nBooking ID : " + str(
+                my_data.id) + "\nFlight : " + str(flightName) + "\nDeparture:" + str(
+                departTime) + "\n-From SafeTravels"
+
+            print(sms_content)
+            print(phone)
+
+            message = client.messages.create(
+                to='+1' + contactNumber,  # replace with the phone number you want to send the message to
+                from_='+18775895208',  # replace with your Twilio phone number
+                body=sms_content  # replace with the message body
+            )
+
         else:
 
             fromCity1 = data['fromCity1']
@@ -883,6 +950,20 @@ def flightPayment():
 
             safeTravelsdb.session.add(my_data)
             safeTravelsdb.session.commit()
+
+            sms_content = ""+"\nHi " + str(user) + "\nHere are your flight booking confirmation details.\nBooking ID:" + str(
+                my_data.id) + "\nFlight1 : " + str(flightName) + "\nDeparture : " + str(
+                departTime) + "\nFlight2 : " + str(flightName1) + "\nDeparture : " + str(
+                departTime1) + "\n-From SafeTravels"
+
+            print(sms_content)
+            print(contactNumber)
+
+            message = client.messages.create(
+                to='+1' + contactNumber,  # replace with the phone number you want to send the message to
+                from_='+18775895208',  # replace with your Twilio phone number
+                body=sms_content  # replace with the message body
+            )
 
 
 
@@ -1055,3 +1136,17 @@ def homePage():
     print(restaurants[:4],hotels[:4])
     return render_template('signUp/loginDetails.html',restaurants=restaurants[:4],hotels=hotels[:4],attractions=attractions[:4])
 
+
+@paths.route('/send_email')
+def send_email():
+    # create message object
+    msg = Message('Hello from Flask', sender='poojithamathi97@gmail.com', recipients=['ppfrndlypooja@gmail.com'])
+
+    # add message body
+    msg.body = 'Hello world!'
+    # send email
+    safeTravel = Flask(__name__)
+    mail = Mail(safeTravel)
+    mail.send(msg)
+
+    return 'Email sent'

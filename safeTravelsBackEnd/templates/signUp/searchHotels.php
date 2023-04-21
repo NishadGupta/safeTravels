@@ -49,7 +49,7 @@
                         </select>
                     </div>
                      <div>
-                            <input id="restaurant" style="width:250px;height:50px;padding:10px;margin:5px;font-size:20px;border-radius:5px;border:1px solid black" type="text" name="restaurant" placeholder="Hotel Name" onchange="setRestaurant()" value={{data.restaurant}}>
+                            <input id="hotel" style="width:250px;height:50px;padding:10px;margin:5px;font-size:20px;border-radius:5px;border:1px solid black" type="text" name="hotel" placeholder="Hotel Name" onchange="setHotel()" value={{data.hotel}}>
                     </div>
                 </div>
                 <div class="dates">

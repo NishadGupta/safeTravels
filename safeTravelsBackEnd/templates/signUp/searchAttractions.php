@@ -128,7 +128,7 @@
 
 
             <div style="margin-top: 15px;">
-                <button style="height:35px;width:250px;background-color: #3B666B;color: black;border-color:#3B666B;border-radius: 5px" onclick="validateAndStoreHotelInfo()">Apply</button>
+                <button style="height:35px;width:250px;background-color: #3B666B;color: black;border-color:#3B666B;border-radius: 5px" onclick="fetchAttractions()">Apply</button>
            </div>
             </div>
         </div>

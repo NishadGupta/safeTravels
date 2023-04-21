@@ -7,13 +7,18 @@
     <list default="true" id="1610cace-35d8-4e82-8eb6-0a954b179329" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/safeTravels.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/safeTravels.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/models/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/models/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/models/paths.py" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/models/paths.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/static/CSS/safetravels.css" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/static/CSS/safetravels.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/static/JS/safetravels.js" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/static/JS/safetravels.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/itinerary.php" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/itinerary.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/loginDetails.html" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/loginDetails.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/registerCustomer.html" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/registerCustomer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/loginCustomer.html" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/loginCustomer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/searchAttractions.php" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/searchAttractions.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/searchHotels.php" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/searchHotels.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/searchRestaurants.html" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/searchRestaurants.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/searchRestaurants.php" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/searchRestaurants.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/success.html" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/success.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/success.php" beforeDir="false" afterPath="$PROJECT_DIR$/safeTravelsBackEnd/templates/signUp/success.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +51,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2MTwvjy2xhuD2RDaL5cG0FHVbUH" />
   <component name="ProjectViewState">
@@ -60,16 +65,19 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;19.7.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;18.15.11&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/poojithamathi/Desktop/MS/SE/this_week/Safetravels&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python.paths">
+  <component name="RunManager" selected="Python.main">
     <configuration name="Safetravels" type="PythonConfigurationType" factoryName="Python">
       <module name="Safetravels" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -197,8 +205,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.paths" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.paths" />
         <item itemvalue="Python.main (2)" />
         <item itemvalue="Python.main (1)" />
       </list>
@@ -235,7 +243,12 @@
       <workItem from="1681792052477" duration="293000" />
       <workItem from="1681792481718" duration="129000" />
       <workItem from="1681837790450" duration="1232000" />
-      <workItem from="1681841333880" duration="10512000" />
+      <workItem from="1681841333880" duration="16996000" />
+      <workItem from="1681919328212" duration="2341000" />
+      <workItem from="1681958886129" duration="5222000" />
+      <workItem from="1682009370096" duration="1534000" />
+      <workItem from="1682041969726" duration="106000" />
+      <workItem from="1682061078199" duration="1021000" />
     </task>
     <servers />
   </component>
@@ -267,7 +280,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Safetravels$main__2_.coverage" NAME="main (2) Coverage Results" MODIFIED="1679198555668" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Safetravels$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1678861941598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Safetravels$main.coverage" NAME="main Coverage Results" MODIFIED="1681841363177" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Safetravels$main.coverage" NAME="main Coverage Results" MODIFIED="1682061632904" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Safetravels$Safetravels.coverage" NAME="Safetravels Coverage Results" MODIFIED="1678898113511" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/Safetravels$paths.coverage" NAME="paths Coverage Results" MODIFIED="1681862378494" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/safeTravelsBackEnd/models" />
   </component>
